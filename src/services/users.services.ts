@@ -126,6 +126,7 @@ class UsersService {
       id_token: string
     }
   }
+
   private async getGoogleUserInfo({ access_token, id_token }: { access_token: string; id_token: string }) {
     const { data } = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo`, {
       headers: {
@@ -147,6 +148,7 @@ class UsersService {
       locale: string
     }
   }
+
   async oauth({ code }: { code: string }) {
     const { access_token, id_token } = await this.getOauthGoogleToken({ code })
     const userInfo = await this.getGoogleUserInfo({ access_token, id_token })
@@ -188,6 +190,24 @@ class UsersService {
 
   async logout({ refresh_token }: { refresh_token: string }) {
     await databaseService.refreshTokens.deleteOne({ token: refresh_token })
+  }
+
+  async refreshToken({
+    user_id,
+    verify,
+    old_refresh_token
+  }: {
+    user_id: string
+    verify: UserVerifyStatus
+    old_refresh_token: string
+  }) {
+    const [{ access_token, refresh_token }] = await Promise.all([
+      this.signAccessAndRefreshToken({ user_id, verify }),
+      databaseService.refreshTokens.deleteOne({ token: old_refresh_token })
+    ])
+    await this.addRefreshTokenIntoDB({ user_id: user_id as string, token: refresh_token })
+
+    return { access_token, refresh_token }
   }
 
   async verifyEmail({ user_id }: { user_id: string }) {
@@ -290,6 +310,7 @@ class UsersService {
     )
     return user
   }
+
   async follow({
     user_id,
     followed_user_id

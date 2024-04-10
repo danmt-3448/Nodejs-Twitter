@@ -1,6 +1,7 @@
 import { Request } from 'express'
 import { File } from 'formidable'
 import fs from 'fs'
+import path from 'path'
 import { UPLOAD_IMAGE_TEMP_DIR, UPLOAD_VIDEO_DIR, UPLOAD_VIDEO_TEMP_DIR } from '~/contants/dir'
 
 export const initFolder = () => {
@@ -42,25 +43,32 @@ export const handleUploadImage = async (req: Request) => {
   })
 }
 
+// Cách xử lý khi upload video và encode
+// Có 2 giai đoạn
+// Upload video: Upload video thành công thì resolve về cho người dùng
+// Encode video: Khai báo thêm 1 url endpoint để check xem cái video đó đã encode xong chưa
+
 export const handleUploadVideo = async (req: Request) => {
   const formidable = (await import('formidable')).default
+  const nanoId = (await import('nanoid')).nanoid
+  const idName = nanoId()
+  console.log({ idName })
+  const folderPath = path.resolve(UPLOAD_VIDEO_DIR, idName)
+  fs.mkdirSync(folderPath)
   const form = formidable({
-    uploadDir: UPLOAD_VIDEO_DIR,
+    uploadDir: folderPath,
     // keepExtensions: true, // ko nên xài vì bị lỗi nếu file có name có 2 dấu '.' là 1321.apptest.mp4
     maxFiles: 1,
     maxFileSize: 50 * 1024 * 1024, // 50mb
     filter: function ({ name, mimetype, originalFilename }) {
-      console.log({ name })
-      console.log({ mimetype })
-      console.log({ originalFilename })
-
-      const valid =
-        (name === 'video' && Boolean(mimetype?.includes('mp4') || mimetype?.includes('quicktime'))) ||
-        mimetype?.includes('mov')
+      const valid = name === 'video' && Boolean(mimetype?.includes('mp4') || mimetype?.includes('quicktime'))
       if (!valid) {
         form.emit('error' as any, new Error('File type is not valid') as any)
       }
       return true
+    },
+    filename() {
+      return idName
     }
   })
   return new Promise<File[]>((resolve, reject) => {
@@ -78,6 +86,7 @@ export const handleUploadVideo = async (req: Request) => {
           const extFile = getExtension(video.originalFilename as string)
           fs.renameSync(video.filepath, video.filepath + '.' + extFile)
           video.newFilename = video.newFilename + '.' + extFile
+          video.filepath = video.filepath + '.' + extFile
         })
 
       resolve(files.video as File[])

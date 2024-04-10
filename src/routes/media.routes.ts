@@ -1,5 +1,10 @@
 import { Router } from 'express'
-import { uploadImageSingleController, uploadVideoSingleController } from '~/controllers/medias.controllers'
+import {
+  uploadImageController,
+  uploadVideoController,
+  uploadVideoHLSController,
+  videoStatusController
+} from '~/controllers/medias.controllers'
 import { accessTokenValidator, verifyUserValidator } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 
@@ -17,12 +22,7 @@ const mediaRouter = Router()
  *  Content-type: multipart/form-data
  * }
  */
-mediaRouter.post(
-  '/upload-image',
-  accessTokenValidator,
-  verifyUserValidator,
-  wrapRequestHandler(uploadImageSingleController)
-)
+mediaRouter.post('/upload-image', accessTokenValidator, verifyUserValidator, wrapRequestHandler(uploadImageController))
 
 /**
  * Description upload video
@@ -36,11 +36,41 @@ mediaRouter.post(
  *  Content-type: multipart/form-data
  * }
  */
+mediaRouter.post('/upload-video', accessTokenValidator, verifyUserValidator, wrapRequestHandler(uploadVideoController))
+
+/**
+ * Description upload video hls
+ * Path: /medias/upload-video-hls
+ * Method: post
+ * Body: {
+ *  video:[]
+ * }
+ * Headers:{
+ *  Authorization: Bearer <access_token>
+ *  Content-type: multipart/form-data
+ * }
+ */
 mediaRouter.post(
-  '/upload-video',
+  '/upload-video-hls',
   accessTokenValidator,
   verifyUserValidator,
-  wrapRequestHandler(uploadVideoSingleController)
+  wrapRequestHandler(uploadVideoHLSController)
+)
+
+/**
+ * Description: get status video
+ * Path: /medias/video-status
+ * Method: get
+ * Headers:{
+ *  Authorization: Bearer <access_token>
+ *  Params: {id: string}
+ * }
+ */
+mediaRouter.get(
+  '/video-status/:id',
+  accessTokenValidator,
+  verifyUserValidator,
+  wrapRequestHandler(videoStatusController)
 )
 
 export default mediaRouter

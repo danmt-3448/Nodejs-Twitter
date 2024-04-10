@@ -7,8 +7,9 @@ import { USERS_MESSAGES } from '~/contants/messages'
 import {
   ChangePasswordReqBody,
   FollowReqBody,
-  GetParamsReqParams,
+  GetProfileReqParams,
   LogoutTokenReqBody,
+  RefreshTokenReqBody,
   RegisterReqBody,
   TokenPayload,
   UnfollowReqParams,
@@ -68,6 +69,23 @@ export const logoutController = async (
   const { refresh_token } = req.body
   const result = await usersService.logout({ refresh_token })
   return res.send({ message: USERS_MESSAGES.LOGOUT_SUCCESS, result })
+}
+
+export const refreshTokenController = async (
+  req: Request<ParamsDictionary, unknown, RefreshTokenReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { refresh_token } = req.body
+  const { user_id, verify } = req.decoded_refresh_token as TokenPayload
+
+  const result = await usersService.refreshToken({
+    user_id: user_id as string,
+    verify,
+    old_refresh_token: refresh_token
+  })
+
+  return res.send({ message: USERS_MESSAGES.REFRESH_TOKEN_SUCCESS, result })
 }
 
 export const verifyEmailTokenController = async (
@@ -158,7 +176,7 @@ export const updateMeController = async (req: Request, res: Response, next: Next
   return res.send({ message: USERS_MESSAGES.UPDATE_ME_SUCCESS, result })
 }
 
-export const getProfileController = async (req: Request<GetParamsReqParams>, res: Response, next: NextFunction) => {
+export const getProfileController = async (req: Request<GetProfileReqParams>, res: Response, next: NextFunction) => {
   const { username } = req.params
   const user = await usersService.getProfile({ username })
   if (!user) {
