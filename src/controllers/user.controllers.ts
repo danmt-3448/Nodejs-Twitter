@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
-import { UserVerifyStatus } from '~/contants/enums'
-import HTTP_STATUS from '~/contants/httpStatus'
-import { USERS_MESSAGES } from '~/contants/messages'
+import { UserVerifyStatus } from '~/constants/enums'
+import HTTP_STATUS from '~/constants/httpStatus'
+import { USERS_MESSAGES } from '~/constants/messages'
 import {
   ChangePasswordReqBody,
   FollowReqBody,
@@ -15,7 +15,7 @@ import {
   UnfollowReqParams,
   VerifyEmailTokenReqBody
 } from '~/models/requests/User.requests'
-import User from '~/models/schemas/Users.schema'
+import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
 import usersService from '~/services/users.services'
 import {
@@ -23,7 +23,7 @@ import {
   LoginReqBody,
   ResetPasswordReqBody,
   VerifyForgotPasswordReqBody
-} from './../models/requests/User.requests'
+} from '../models/requests/User.requests'
 import { ErrorWithStatus } from '~/models/Errors'
 import 'dotenv/config'
 
@@ -77,12 +77,13 @@ export const refreshTokenController = async (
   next: NextFunction
 ) => {
   const { refresh_token } = req.body
-  const { user_id, verify } = req.decoded_refresh_token as TokenPayload
+  const { user_id, verify, exp } = req.decoded_refresh_token as TokenPayload
 
   const result = await usersService.refreshToken({
     user_id: user_id as string,
     verify,
-    old_refresh_token: refresh_token
+    old_refresh_token: refresh_token,
+    exp
   })
 
   return res.send({ message: USERS_MESSAGES.REFRESH_TOKEN_SUCCESS, result })

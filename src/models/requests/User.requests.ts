@@ -1,6 +1,6 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { JwtPayload } from 'jsonwebtoken'
-import { TokenType, UserVerifyStatus } from '~/contants/enums'
+import { TokenType, UserVerifyStatus } from '~/constants/enums'
 
 export interface LoginReqBody {
   email: string
@@ -27,6 +27,8 @@ export interface TokenPayload extends JwtPayload {
   user_id: string
   type: TokenType
   verify: UserVerifyStatus
+  exp: number
+  iat: number
 }
 
 export interface VerifyEmailTokenReqBody {

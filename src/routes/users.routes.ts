@@ -16,7 +16,7 @@ import {
   changePasswordController,
   oauthGoogleController,
   refreshTokenController
-} from '~/controllers/users.controllers'
+} from '~/controllers/user.controllers'
 import { filterMiddleware } from '~/middlewares/commons.midlewares'
 import {
   accessTokenValidator,
@@ -34,6 +34,7 @@ import {
   changePasswordValidator
 } from '~/middlewares/users.middlewares'
 import { UpdateMeBodyReq } from '~/models/requests/User.requests'
+import databaseService from '~/services/database.services'
 import { wrapRequestHandler } from '~/utils/handlers'
 const usersRouter = Router()
 
@@ -217,5 +218,27 @@ usersRouter.put(
   changePasswordValidator,
   wrapRequestHandler(changePasswordController)
 )
+
+// START TEST
+usersRouter.get(
+  '/test/test',
+  wrapRequestHandler(async (req, res, next) => {
+    const userTestData = []
+    function randomNumber() {
+      return Math.floor(Math.random() * 100) + 1
+    }
+    for (let i = 1; i <= 1000; i++) {
+      userTestData.push({
+        name: `user_${i}`,
+        age: randomNumber(),
+        sex: i % 2 === 0 ? 'male' : 'female'
+      })
+    }
+    await databaseService.test.insertMany(userTestData)
+    res.json({ message: 'insert DB success' })
+  })
+)
+
+// END TEST
 
 export default usersRouter

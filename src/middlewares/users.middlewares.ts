@@ -4,10 +4,10 @@ import { ParamSchema, checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
 import { ObjectId } from 'mongodb'
-import { UserVerifyStatus } from '~/contants/enums'
-import HTTP_STATUS from '~/contants/httpStatus'
-import { USERS_MESSAGES } from '~/contants/messages'
-import { REGEX_USERNAME } from '~/contants/regex'
+import { UserVerifyStatus } from '~/constants/enums'
+import HTTP_STATUS from '~/constants/httpStatus'
+import { USERS_MESSAGES } from '~/constants/messages'
+import { REGEX_USERNAME } from '~/constants/regex'
 import { ErrorWithStatus } from '~/models/Errors'
 import { TokenPayload } from '~/models/requests/User.requests'
 import databaseService from '~/services/database.services'
@@ -507,3 +507,13 @@ export const changePasswordValidator = validate(
     ['body']
   )
 )
+
+export const isLoggedInValidator = (middleware: (req: Request, res: Response, next: NextFunction) => void) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (req.headers.authorization) {
+      return middleware(req, res, next)
+    }
+
+    next()
+  }
+}

@@ -77,15 +77,27 @@ export const TWEETS_MESSAGES = {
   MEDIAS_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'Medias must be an array of media object',
   INVALID_TWEET_ID: 'Invalid tweet id',
   TWEET_NOT_FOUND: 'Tweet not found',
-  TWEET_IS_NOT_PUBLIC: 'Tweet is not public'
+  TWEET_IS_NOT_PUBLIC: 'Tweet is not public',
+  TWEET_SUCCESSFULLY: 'Tweet successfully',
+  CREATE_TWEET_SUCCESSFULLY: 'Create tweet successfully',
+  GET_TWEET_SUCCESSFULLY: 'Get tweet successfully',
+  GET_TWEET_CHILDREN_SUCCESSFULLY: 'Get tweet children successfully'
 } as const
 
 export const BOOKMARK_MESSAGES = {
   BOOKMARK_SUCCESSFULLY: 'Bookmark successfully',
-  UNBOOKMARK_SUCCESSFULLY: 'Unbookmark successfully'
+  UNBOOKMARK_SUCCESSFULLY: 'Unbookmark successfully',
+  TWEET_ID_INVALID: 'Tweet id invalid'
 }
 
 export const LIKE_MESSAGES = {
   LIKE_SUCCESSFULLY: 'Like successfully',
   UNLIKE_SUCCESSFULLY: 'Unlike successfully'
+}
+
+export const PAGINATION = {
+  LIMIT_MAX_MIN: 'Limit is 1 <= limit <= 100',
+  PAGE_MIN: 'Page min is 1',
+  PAGE_INVALiD: 'Page is invalid',
+  LIMIT_INVALiD: 'Limit is invalid'
 }

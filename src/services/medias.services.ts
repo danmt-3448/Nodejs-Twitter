@@ -2,17 +2,17 @@ import 'dotenv/config'
 import { Request } from 'express'
 import path from 'path'
 import sharp from 'sharp'
-import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/contants/dir'
+import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import { getNameFromFullname, handleUploadImage, handleUploadVideo } from '~/utils/file'
 import fs from 'fs'
 import fsPromise from 'fs/promises'
-import { isProduction } from '~/contants/config'
+import { isProduction } from '~/constants/config'
 import { File } from 'formidable'
-import { EncodingStatus, MediaType } from '~/contants/enums'
+import { EncodingStatus, MediaType } from '~/constants/enums'
 import { IMediaType } from '~/models/Others'
 import { encodeHLSWithMultipleVideoStreams } from '~/utils/video'
 import databaseService from '~/services/database.services'
-import VideoStatus from '~/models/schemas/Videos.schema'
+import VideoStatus from '~/models/schemas/Video.schema'
 
 class Queue {
   items: string[]
@@ -86,23 +86,23 @@ class Queue {
         )
         console.log(`Encode video ${videoPath} success`)
       } catch (error) {
-        // await databaseService.videoStatus
-        //   .updateOne(
-        //     {
-        //       name: idName
-        //     },
-        //     {
-        //       $set: {
-        //         status: EncodingStatus.Failed
-        //       },
-        //       $currentDate: {
-        //         updated_at: true
-        //       }
-        //     }
-        //   )
-        //   .catch((err) => {
-        //     console.error('Update video status error', err)
-        //   })
+        await databaseService.videoStatus
+          .updateOne(
+            {
+              name: idName
+            },
+            {
+              $set: {
+                status: EncodingStatus.Failed
+              },
+              $currentDate: {
+                updated_at: true
+              }
+            }
+          )
+          .catch((err) => {
+            console.error('Update video status error', err)
+          })
         console.error(`Encode video ${videoPath} error`)
         console.error(error)
       }

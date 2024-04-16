@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import { EncodingStatus } from '~/contants/enums'
+import { EncodingStatus } from '~/constants/enums'
 
 interface IVideoStatus {
   _id?: ObjectId
