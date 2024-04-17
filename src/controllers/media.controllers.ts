@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
+import fs from 'fs'
 import path from 'path'
 import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
-import mediasService from '~/services/medias.services'
-import fs from 'fs'
-import { GetVideoStatusReqParams } from '~/models/requests/Video.requests'
+import mediasService from '~/services/media.services'
 // import mime from 'mime'
 
 export const uploadImageController = async (req: Request, res: Response, next: NextFunction) => {

@@ -1,14 +1,14 @@
 import { ObjectId } from 'mongodb'
 
 interface IFollower {
-  _id: ObjectId
+  _id?: ObjectId
   user_id: ObjectId
   created_at?: Date
   followed_user_id: ObjectId // người dc theo dõi
 }
 
 class Follower {
-  _id: ObjectId
+  _id?: ObjectId
   user_id: ObjectId
   created_at?: Date
   followed_user_id: ObjectId

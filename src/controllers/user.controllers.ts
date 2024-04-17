@@ -17,7 +17,7 @@ import {
 } from '~/models/requests/User.requests'
 import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
-import usersService from '~/services/users.services'
+import usersService from '~/services/user.services'
 import {
   ForgotPasswordReqBody,
   LoginReqBody,

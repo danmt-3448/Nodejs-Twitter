@@ -18,7 +18,7 @@ class DatabaseService {
     this.client = new MongoClient(uri, {
       serverApi: {
         version: ServerApiVersion.v1,
-        strict: true,
+        strict: false,
         deprecationErrors: true
       }
     })
@@ -70,12 +70,20 @@ class DatabaseService {
       this.followers.createIndex({ user_id: 1, followed_user_id: 1 })
     }
   }
-  // async indexTweets() {
-  //   const exists = await this.tweets.indexExists(['content_text'])
-  //   if (!exists) {
-  //     this.tweets.createIndex({ content: 'text' }, { default_language: 'none' })
-  //   }
-  // }
+
+  async indexHashtags() {
+    const exists = await this.hashtags.indexExists(['name_text'])
+    if (!exists) {
+      this.hashtags.createIndex({ name: 'text' }, { default_language: 'none' })
+    }
+  }
+
+  async indexTweets() {
+    const exists = await this.tweets.indexExists(['content_text'])
+    if (!exists) {
+      this.tweets.createIndex({ content: 'text' }, { default_language: 'none' })
+    }
+  }
 
   get users(): Collection<User> {
     return this.db.collection(process.env.DB_USERS_COLLECTION as string)

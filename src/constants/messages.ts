@@ -101,3 +101,8 @@ export const PAGINATION = {
   PAGE_INVALiD: 'Page is invalid',
   LIMIT_INVALiD: 'Limit is invalid'
 }
+
+export const SEARCH_MESSAGES = {
+  SEARCH_SUCCESSFULLY: 'Search successfully',
+  SEARCH_UNSUCCESSFULLY: 'Search unsuccessfully'
+}

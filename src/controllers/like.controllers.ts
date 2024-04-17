@@ -3,7 +3,7 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { LIKE_MESSAGES } from '~/constants/messages'
 import { LikeReqBody } from '~/models/requests/Like.requests'
 import { TokenPayload } from '~/models/requests/User.requests'
-import likesService from '~/services/likes.services'
+import likesService from '~/services/like.services'
 
 export const likeTweetController = async (
   req: Request<ParamsDictionary, any, LikeReqBody>,
