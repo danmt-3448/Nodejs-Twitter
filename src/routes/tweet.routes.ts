@@ -5,11 +5,11 @@ import {
   getTweetChildrenController,
   getNewTweetController
 } from '~/controllers/tweet.controllers'
+import { paginationValidator } from '~/middlewares/search.middlewares'
 import {
   audienceValidator,
   createTweetValidator,
   getTweetChildrenValidator,
-  paginationValidator,
   tweetIdValidator
 } from '~/middlewares/tweets.middlewares'
 import { accessTokenValidator, isLoggedInValidator, verifyUserValidator } from '~/middlewares/users.middlewares'

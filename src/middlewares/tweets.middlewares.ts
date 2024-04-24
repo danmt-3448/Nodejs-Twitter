@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash'
 import { ObjectId } from 'mongodb'
 import { MediaType, TweetAudience, TweetType, UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { PAGINATION, TWEETS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
+import { TWEETS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import Tweet from '~/models/schemas/Tweet.schema'
 import databaseService from '~/services/database.services'
@@ -15,6 +15,7 @@ import { validate } from '~/utils/validation'
 const tweetType = numberEnumToArray(TweetType)
 const audienceType = numberEnumToArray(TweetAudience)
 const mediaType = numberEnumToArray(MediaType)
+
 export const createTweetValidator = validate(
   checkSchema(
     {
@@ -298,42 +299,6 @@ export const getTweetChildrenValidator = validate(
         isIn: {
           options: [tweetType],
           errorMessage: TWEETS_MESSAGES.INVALID_TYPE
-        }
-      }
-    },
-    ['query']
-  )
-)
-
-export const paginationValidator = validate(
-  checkSchema(
-    {
-      limit: {
-        isNumeric: {
-          errorMessage: PAGINATION.LIMIT_INVALiD
-        },
-        custom: {
-          options: async (value) => {
-            const limit = Number(value)
-            if (limit > 100 || limit < 1) {
-              throw new Error(PAGINATION.LIMIT_MAX_MIN)
-            }
-            return true
-          }
-        }
-      },
-      page: {
-        isNumeric: {
-          errorMessage: PAGINATION.PAGE_INVALiD
-        },
-        custom: {
-          options: async (value) => {
-            const page = Number(value)
-            if (page < 1) {
-              throw new Error(PAGINATION.PAGE_MIN)
-            }
-            return true
-          }
         }
       }
     },

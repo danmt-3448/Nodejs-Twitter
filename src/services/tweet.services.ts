@@ -506,7 +506,7 @@ class TweetsService {
       }
     })
 
-    return { result, total: total[0].total }
+    return { result, total: total[0]?.total || 0 }
   }
 }
 const tweetsService = new TweetsService()

@@ -4,4 +4,3 @@ export interface IMediaType {
   url: string
   type: MediaType
 }
-

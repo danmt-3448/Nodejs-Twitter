@@ -1,0 +1,81 @@
+components:
+  schemas:
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+          example: thanhdan1999@gmail.com
+        password:
+          type: string
+          example: Danmt123@
+    SuccessLogin:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYyNzM4MTBhMDJiYzZmMjU2MDljNzBjIiwidHlwZSI6MCwidmVyaWZ5IjoxLCJpYXQiOjE3MTM5MzAyMDYsImV4cCI6MTcxNDAxNjYwNn0.B6fFHCPRBJbRsVkuGVCAtSPtpeZypwiqgnSSl2xul1o"
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYyNzM4MTBhMDJiYzZmMjU2MDljNzBjIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE3MTM5MzAyMDYsImV4cCI6MTcyMjU3MDIwNn0.n94OSfbbbmHmjsof7BDmJrRF1tk47m35TEHQwcxOjOA"
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: MongoId
+          example: "66273810a02bc6f25609c70c"
+        name:
+          type: string
+          example: "danmt 2"
+        email:
+          type: string
+          format: email
+          example: "thanhdan1999+2@gmail.com"
+        date_of_birth:
+          type: string
+          format: ISO8601
+          example: "1970-01-01T00:00:00.000Z"
+        created_at:
+          type: string
+          format: ISO8601
+          example: "2024-04-23T04:24:48.824Z"
+        updated_at:
+          type: string
+          format: ISO8601
+          example: "2024-04-23T04:24:48.824Z"
+        verify:
+          $ref: "#components/schemas/UserVerifyStatus"
+        bio:
+          type: string
+          example: "This is a brief description about the user."
+        location:
+          type: string
+          example: "Hanoi, Vietnam"
+        website:
+          type: string
+          example: "https://example.com"
+        username:
+          type: string
+          example: "user66273810a02bc6f25609c70c"
+        avatar:
+          type: string
+          example: "https://example.com/avatar.jpg"
+        cover_photo:
+          type: string
+          example: "https://example.com/cover.jpg"
+        twitter_circle:
+          type: array
+          items:
+            type: string
+            format: MongoId
+          example: ["66273810a02bc6f25609c70c", "66273810a123c6f25gas9c789"]
+    UserVerifyStatus:
+      type: number
+      enum: [Unverified, Verified, Banned]
+      example: 1
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

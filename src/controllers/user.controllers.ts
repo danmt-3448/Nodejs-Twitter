@@ -26,6 +26,7 @@ import {
 } from '../models/requests/User.requests'
 import { ErrorWithStatus } from '~/models/Errors'
 import 'dotenv/config'
+import { envConfig } from '~/constants/config'
 
 export const loginController = async (req: Request<ParamsDictionary, any, LoginReqBody>, res: Response) => {
   const user = req.user as User
@@ -43,9 +44,7 @@ export const loginController = async (req: Request<ParamsDictionary, any, LoginR
 export const oauthGoogleController = async (req: Request, res: Response) => {
   const { code } = req.query
   const result = await usersService.oauth({ code: code as string })
-  const redirectUrl = `${process.env.CLIENT_REDIRECT_CALLBACK as string}?access_token=${
-    result.access_token
-  }&refresh_token=${result.refresh_token}&new_user=${result.new_user}&verify=${result.verify}`
+  const redirectUrl = `${envConfig.clientRedirectCallback}?access_token=${result.access_token}&refresh_token=${result.refresh_token}&new_user=${result.new_user}&verify=${result.verify}`
   return res.redirect(redirectUrl)
 }
 
@@ -117,7 +116,10 @@ export const resendVerifyEmailTokenController = async (req: Request, res: Respon
   if (user?.verify === UserVerifyStatus.Verified) {
     return res.status(HTTP_STATUS.ACCEPTED).send({ message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE })
   }
-  const result = await usersService.resendVerifyEmail({ user_id: new ObjectId(user?._id).toString() })
+  const result = await usersService.resendVerifyEmail({
+    user_id: new ObjectId(user?._id).toString(),
+    email: user.email
+  })
   return res.send({ message: USERS_MESSAGES.RESEND_VERIFY_EMAIL_SUCCESS, result })
 }
 
@@ -126,10 +128,11 @@ export const forgotPasswordController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { _id, verify } = req.user as User
+  const { _id, verify, email } = req.user as User
   const result = await usersService.forgotPassword({
     user_id: new ObjectId(_id).toString(),
-    verify
+    verify,
+    email
   })
   return res.send({
     message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD,

@@ -1,0 +1,339 @@
+openapi: 3.0.3
+info:
+  title: Twitter clone typescript
+  description: |-
+    This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
+    You can now help us improve the API whether it's by making changes to the definition itself or to the code.
+    That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
+
+    _If you're looking for the Swagger 2.0/OAS 2.0 version of Petstore, then click [here](https://editor.swagger.io/?url=https://petstore.swagger.io/v2/swagger.yaml). Alternatively, you can load via the `Edit > Load Petstore OAS 2.0` menu option!_
+
+    Some useful links:
+    - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
+    - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: thanhdan1999@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.1
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:4000
+tags:
+  - name: users
+    description: Operations about user
+paths:
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Login
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/LoginBody"
+        required: true
+      responses:
+        "200":
+          description: Login success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login success
+                  result:
+                    $ref: "#components/schemas/LoginSuccess"
+        "400":
+          description: Bad request
+        "404":
+          description: User not found
+        "422":
+          description: Validation exception
+  /users/me:
+    get:
+      tags:
+        - users
+      summary: Get profile me
+      operationId: getMe
+      security:
+        - BearerAuth: []
+      responses:
+        default:
+          description: Get profile success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get my profile success
+                  result:
+                    $ref: "#components/schemas/User"
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Register user
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/RegisterBody"
+        required: true
+      responses:
+        "200":
+          description: Register success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Register success
+                  result:
+                    $ref: "#components/schemas/RegisterSuccess"
+  /users/logout:
+    post:
+      tags:
+        - users
+      summary: Logout user
+      operationId: logout
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/LogoutBody"
+        required: true
+      responses:
+        "200":
+          description: Logout success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logout success
+  /users/refresh_token:
+    post:
+      tags:
+        - users
+      summary: Refresh token user
+      operationId: refresh_token
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/RefreshTokenBody"
+        required: true
+      responses:
+        "200":
+          description: RefreshToken success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Refresh token success
+                  result:
+                    $ref: "#components/schemas/RefreshTokenSuccess"
+  /users/verify-email:
+    post:
+      tags:
+        - users
+      summary: Email verify token
+      operationId: email_verify_token
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/EmailVerifyTokenBody"
+        required: true
+      responses:
+        "200":
+          description: Verify email token success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Verify email token success
+                  result:
+                    $ref: "#components/schemas/EmailVerifyTokenSuccess"
+components:
+  schemas:
+    # request body
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+          example: thanhdan1999@gmail.com
+        password:
+          type: string
+          example: Danmt123@
+    RegisterBody:
+      type: object
+      properties:
+        email:
+          type: string
+          example: thanhdan1999@gmail.com
+        name:
+          type: string
+          example: danmt
+        day_of_birth:
+          type: string
+          format: ISO8601
+          example: "2024-04-03T07:01:44.259Z"
+        confirm_password:
+          type: string
+          example: Danmt123@
+        password:
+          type: string
+          example: Danmt123@
+    LogoutBody:
+      type: object
+      properties:
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    RefreshTokenBody:
+      type: object
+      properties:
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    EmailVerifyTokenBody:
+      type: object
+      properties:
+        email_verify_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    LoginSuccess:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    
+    # response
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: MongoId
+          example: "66273810a02bc6f25609c70c"
+        name:
+          type: string
+          example: "danmt 2"
+        email:
+          type: string
+          format: email
+          example: "thanhdan1999+2@gmail.com"
+        date_of_birth:
+          type: string
+          format: ISO8601
+          example: "1970-01-01T00:00:00.000Z"
+        created_at:
+          type: string
+          format: ISO8601
+          example: "2024-04-23T04:24:48.824Z"
+        updated_at:
+          type: string
+          format: ISO8601
+          example: "2024-04-23T04:24:48.824Z"
+        verify:
+          $ref: "#components/schemas/UserVerifyStatus"
+        bio:
+          type: string
+          example: "This is a brief description about the user."
+        location:
+          type: string
+          example: "Hanoi, Vietnam"
+        website:
+          type: string
+          example: "https://example.com"
+        username:
+          type: string
+          example: "user66273810a02bc6f25609c70c"
+        avatar:
+          type: string
+          example: "https://example.com/avatar.jpg"
+        cover_photo:
+          type: string
+          example: "https://example.com/cover.jpg"
+        twitter_circle:
+          type: array
+          items:
+            type: string
+            format: MongoId
+          example: ["66273810a02bc6f25609c70c", "66273810a123c6f25gas9c789"]
+    
+    # response success
+    RegisterSuccess:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYyNzM4MTBhMDJiYzZmMjU2MDljNzBjIiwidHlwZSI6MCwidmVyaWZ5IjoxLCJpYXQiOjE3MTM5MzAyMDYsImV4cCI6MTcxNDAxNjYwNn0.B6fFHCPRBJbRsVkuGVCAtSPtpeZypwiqgnSSl2xul1o"
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYyNzM4MTBhMDJiYzZmMjU2MDljNzBjIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE3MTM5MzAyMDYsImV4cCI6MTcyMjU3MDIwNn0.n94OSfbbbmHmjsof7BDmJrRF1tk47m35TEHQwcxOjOA"
+    RefreshTokenSuccess:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    EmailVerifyTokenSuccess:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+
+    # enum
+    UserVerifyStatus:
+      type: number
+      enum: [Unverified, Verified, Banned]
+      example: 1
+    
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -39,14 +39,41 @@ import { wrapRequestHandler } from '~/utils/handlers'
 const usersRouter = Router()
 
 /**
- * Description login a user
- * Path: /login
- * Method: post
- * Body: {
- *          email: string,
- *          password: string,
- *        }
+ * @swagger
+ * /users/login:
+ *   post:
+ *     tags:
+ *       - users
+ *     summary: Đăng nhập
+ *     operationId: login
+ *     requestBody:
+ *       description: Update an existent pet in the store
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: "#components/schemas/LoginBody"
+ *     responses:
+ *       "200":
+ *         description: Dang nhap thanh cong
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Login success
+ *                 result:
+ *                   $ref: "#components/schemas/SuccessLogin"
+ *       "400":
+ *         description: Bad request
+ *       "404":
+ *         description: User not found
+ *       "422":
+ *         description: Validation exception
  */
+
 usersRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 
 /**
@@ -92,6 +119,7 @@ usersRouter.post('/refresh_token', refreshTokenValidator, wrapRequestHandler(ref
  * Description verify email
  * Path: /verify-email
  * Method: post
+ * Header: {Authorization: Bearer <access_token>}
  * Body: { refresh_token: string }
  */
 usersRouter.post('/verify-email', verifyEmailTokenValidator, wrapRequestHandler(verifyEmailTokenController))
@@ -134,11 +162,30 @@ usersRouter.post(
 usersRouter.post('/reset-password', resetPasswordTokenValidator, wrapRequestHandler(resetPasswordController))
 
 /**
- * Description: get profile me
- * Path: /me
- * Method: get
- * Header: { Authorization: Bearer <access_token> }
+ * @swagger
+ * /users/me:
+ *   get:
+ *     tags:
+ *       - users
+ *     summary: Lấy thông tin người dùng
+ *     operationId: getMe
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       default:
+ *         description: Lấy thông tin người dùng thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Lấy thông tin hồ sơ của tôi thành công
+ *                 result:
+ *                   $ref: "#components/schemas/User"
  */
+
 usersRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
 
 /**

@@ -47,12 +47,10 @@ export const handleUploadImage = async (req: Request) => {
 // Có 2 giai đoạn
 // Upload video: Upload video thành công thì resolve về cho người dùng
 // Encode video: Khai báo thêm 1 url endpoint để check xem cái video đó đã encode xong chưa
-
 export const handleUploadVideo = async (req: Request) => {
   const formidable = (await import('formidable')).default
   const nanoId = (await import('nanoid')).nanoid
   const idName = nanoId()
-  console.log({ idName })
   const folderPath = path.resolve(UPLOAD_VIDEO_DIR, idName)
   fs.mkdirSync(folderPath)
   const form = formidable({
@@ -93,6 +91,7 @@ export const handleUploadVideo = async (req: Request) => {
     })
   })
 }
+
 export const getNameFromFullname = (fullname: string) => {
   const namearr = fullname.split('.')
   namearr.pop()
@@ -102,4 +101,22 @@ export const getNameFromFullname = (fullname: string) => {
 export const getExtension = (fullname: string) => {
   const namearr = fullname.split('.')
   return namearr[namearr.length - 1]
+}
+//get all file in folder
+export const getFiles = (dir: string, files: string[] = []) => {
+  // Get an array of all files and directories in the passed directory using fs.readdirSync
+  const fileList = fs.readdirSync(dir)
+  // Create the full path of the file/directory by concatenating the passed directory and file/directory name
+  for (const file of fileList) {
+    const name = `${dir}/${file}`
+    // Check if the current file/directory is a directory using fs.statSync
+    if (fs.statSync(name).isDirectory()) {
+      // If it is a directory, recursively call the getFiles function with the directory path and the files array
+      getFiles(name, files)
+    } else {
+      // If it is a file, push the full path to the files array
+      files.push(name)
+    }
+  }
+  return files
 }

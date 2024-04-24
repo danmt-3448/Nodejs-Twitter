@@ -4,10 +4,12 @@ import { ParamSchema, checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
 import { ObjectId } from 'mongodb'
+import { envConfig } from '~/constants/config'
 import { UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { REGEX_USERNAME } from '~/constants/regex'
+import { userIdSchema, verifyAccessToken } from '~/middlewares/commons.midlewares'
 import { ErrorWithStatus } from '~/models/Errors'
 import { TokenPayload } from '~/models/requests/User.requests'
 import databaseService from '~/services/database.services'
@@ -80,7 +82,7 @@ const forgotPasswordToken: ParamSchema = {
       try {
         const decoded_forgot_password_token = await verifyToken({
           token: value,
-          secretOrPrivateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+          secretOrPrivateKey: envConfig.jwtSecretForgotPasswordToken
         })
         const user = await databaseService.users.findOne({
           _id: new ObjectId(decoded_forgot_password_token.user_id)
@@ -193,25 +195,6 @@ const usernameSchema: ParamSchema = {
   },
   trim: true
 }
-const userIdSchema: ParamSchema = {
-  custom: {
-    options: async (value: string) => {
-      if (!ObjectId.isValid(value)) {
-        throw new ErrorWithStatus({
-          message: USERS_MESSAGES.INVALID_USER_ID,
-          status: HTTP_STATUS.NOT_FOUND
-        })
-      }
-      const followed_user = await databaseService.users.findOne({ _id: new ObjectId(value) })
-      if (!followed_user) {
-        throw new ErrorWithStatus({
-          message: USERS_MESSAGES.USER_NOT_FOUND,
-          status: HTTP_STATUS.NOT_FOUND
-        })
-      }
-    }
-  }
-}
 
 export const loginValidator = validate(
   checkSchema(
@@ -268,26 +251,9 @@ export const accessTokenValidator = validate(
       Authorization: {
         custom: {
           options: async (value: string, { req }) => {
-            if (!value) {
-              throw new ErrorWithStatus({
-                message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED,
-                status: HTTP_STATUS.UNAUTHORIZED
-              })
-            }
             const access_token = (value || '').split(' ')[1]
-            try {
-              const decoded_authorization = await verifyToken({
-                token: access_token,
-                secretOrPrivateKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
-              })
-              ;(req as TokenPayload).decoded_authorization = decoded_authorization
-            } catch (error) {
-              throw new ErrorWithStatus({
-                message: capitalize((error as JsonWebTokenError).message),
-                status: HTTP_STATUS.UNAUTHORIZED
-              })
-            }
-            return true
+
+            return verifyAccessToken({ access_token, req: req as Request })
           }
         }
       }
@@ -310,7 +276,7 @@ export const refreshTokenValidator = validate(
             }
             try {
               const [decoded_refresh_token, refresh_token] = await Promise.all([
-                verifyToken({ token: value, secretOrPrivateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string }),
+                verifyToken({ token: value, secretOrPrivateKey: envConfig.jwtSecretRefreshToken }),
                 databaseService.refreshTokens.findOne({ token: value })
               ])
 
@@ -354,7 +320,7 @@ export const verifyEmailTokenValidator = validate(
             try {
               const decoded_email_verify_token = await verifyToken({
                 token: value,
-                secretOrPrivateKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
+                secretOrPrivateKey: envConfig.jwtSecretEmailVerifyToken
               })
               ;(req as TokenPayload).decoded_email_verify_token = decoded_email_verify_token
             } catch (error) {

@@ -104,5 +104,9 @@ export const PAGINATION = {
 
 export const SEARCH_MESSAGES = {
   SEARCH_SUCCESSFULLY: 'Search successfully',
-  SEARCH_UNSUCCESSFULLY: 'Search unsuccessfully'
+  SEARCH_UNSUCCESSFULLY: 'Search unsuccessfully',
+  MEDIA_TYPE_INVALID: "Media type is 'image' or 'video'",
+  CONTENT_INVALID: 'Content must be string',
+  HASHTAG_INVALID: 'Hashtag must be string',
+  PEOPLE_FOLLOW_INVALID: 'People follow must be 0 or 1'
 }

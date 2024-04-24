@@ -4,9 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx nodemon --development",
+    "dev": "npx nodemon --env=development",
+    "dev:stag": "npx nodemon --env=staging",
+    "dev:prod": "npx nodemon NODE_ENV=production",
     "build": "rimraf ./dist && tsc && tsc-alias",
-    "start": "node dist/index.js --production",
+    "start:dev": "node dist/index.js --env=development",
+    "start:stag": "node dist/index.js --env=staging",
+    "start:prod": "node dist/index.js --env=production",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check .",
@@ -23,6 +27,8 @@
     "@types/lodash": "^4.17.0",
     "@types/minimist": "^1.2.5",
     "@types/node": "^20.2.1",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.6",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
     "eslint": "^8.40.0",
@@ -31,13 +37,16 @@
     "mime-types": "^2.1.35",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
-    "rimraf": "^5.0.1",
+    "rimraf": "^5.0.5",
     "ts-node": "^10.9.1",
     "tsc-alias": "^1.8.6",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.556.0",
+    "@aws-sdk/client-ses": "^3.556.0",
+    "@aws-sdk/lib-storage": "^3.556.0",
     "@faker-js/faker": "^8.4.1",
     "axios": "^1.6.8",
     "cors": "^2.8.5",
@@ -53,6 +62,14 @@
     "nanoid": "^5.0.7",
     "sharp": "^0.33.3",
     "slash": "^5.1.0",
+    "socket.io": "^4.7.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "yaml": "^2.4.1",
     "zx": "^8.0.1"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.8",
+    "utf-8-validate": "^5.0.10"
   }
 }

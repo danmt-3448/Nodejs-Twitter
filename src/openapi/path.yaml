@@ -1,0 +1,83 @@
+openapi: 3.0.3
+info:
+  title: Twitter clone typescript
+  description: |-
+    This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
+    You can now help us improve the API whether it's by making changes to the definition itself or to the code.
+    That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
+
+    _If you're looking for the Swagger 2.0/OAS 2.0 version of Petstore, then click [here](https://editor.swagger.io/?url=https://petstore.swagger.io/v2/swagger.yaml). Alternatively, you can load via the `Edit > Load Petstore OAS 2.0` menu option!_
+
+    Some useful links:
+    - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
+    - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: thanhdan1999@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.1
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:4000
+tags:
+  - name: users
+    description: Cac api lien quan den user
+paths:
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Đăng nhập
+      operationId: login
+      requestBody:  
+        description: Update an existent pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/LoginBody"
+        required: true
+      responses:
+        "200":
+          description: Dang nhap thanh cong
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login success
+                  result:
+                    $ref: "#components/schemas/SuccessLogin"
+        "400":
+          description: Bad request
+        "404":
+          description: User not found
+        "422":
+          description: Validation exception
+  /users/me:
+    get:
+      tags:
+        - users
+      summary: Lay thong tin user
+      operationId: getMe
+      security:
+        - BearerAuth: []
+      responses:
+        default:
+          description: Lay thong tin user thanh cong
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get my profile success
+                  result:
+                    $ref: "#components/schemas/User"

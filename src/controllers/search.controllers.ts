@@ -11,10 +11,11 @@ export const searchController = async (
 ) => {
   const limit = Number(req.query.limit)
   const page = Number(req.query.page)
+  const people_follow = req.query.people_follow
   const content = req.query.content
+  const media_type = req.query.media_type
   const { user_id } = req.decoded_authorization as TokenPayload
-  const { result, total } = await searchService.search({ limit, page, content, user_id })
-
+  const { result, total } = await searchService.search({ limit, page, content, user_id, media_type, people_follow })
   return res.send({
     message: 'Search ok!',
     result: {
@@ -35,8 +36,17 @@ export const searchHashtagController = async (
   const limit = Number(req.query.limit)
   const page = Number(req.query.page)
   const hashtag = req.query.hashtag
+  const people_follow = req.query.people_follow
+  const media_type = req.query.media_type
   const { user_id } = req.decoded_authorization as TokenPayload
-  const { result, total } = await searchService.searchHashtags({ limit, page, hashtag, user_id })
+  const { result, total } = await searchService.searchHashtags({
+    limit,
+    page,
+    hashtag,
+    user_id,
+    media_type,
+    people_follow
+  })
 
   return res.send({
     message: 'Search ok!',
