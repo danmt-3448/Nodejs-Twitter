@@ -1,4 +1,4 @@
-import cors from 'cors'
+import cors, { CorsOptions } from 'cors'
 import 'dotenv/config'
 import express from 'express'
 import { createServer } from 'http'
@@ -15,12 +15,14 @@ import usersRouter from '~/routes/user.routes'
 import databaseService from '~/services/database.services'
 import { initFolder } from '~/utils/file'
 import { initSocket } from '~/utils/socket'
+import { rateLimit } from 'express-rate-limit'
 // import fs from 'fs'
 // import YAML from 'yaml'
 // import path from 'path'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJsDoc, { Options } from 'swagger-jsdoc'
-import { envConfig } from '~/constants/config'
+import { envConfig, isProduction } from '~/constants/config'
+import helmet from 'helmet'
 
 // const file = fs.readFileSync(path.resolve('twitter-swagger.yaml'), 'utf8')
 // const swaggerDocument = YAML.parse(file)
@@ -72,19 +74,35 @@ const options: Options = {
   apis: ['./src/openapi/*.yaml'] // files containing annotations as above
 }
 
-const openapiSpecification = swaggerJsDoc(options)
+const openApiSpecification = swaggerJsDoc(options)
 
 const app = express()
 const httpServer = createServer(app)
 const port = envConfig.port
+const corsOptions: CorsOptions = {
+  origin: isProduction ? envConfig.clientUrl : '*'
+}
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+  standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers.
+  // store: ... , // Redis, Memcached, etc. See below.
+})
+
 // Create folder upload when start sever
 initFolder()
 
 //convert to json
 app.use(express.json())
-app.use(cors())
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification))
+app.use(cors(corsOptions))
+app.use(helmet())
+app.use(limiter)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiSpecification))
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
+// Apply the rate limiting middleware to all requests.
 
 //connect mongodb
 databaseService.connect().then(() => {
