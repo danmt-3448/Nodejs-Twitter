@@ -2,17 +2,26 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
+    # defaults:
+    #   run:
+    #     working-directory: ./TwitterMyCode
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - uses: actions/checkout@v1
+      - name: Create env file
+        run: echo "${{ secrets.TWITTER_ENV_DEVELOPMENT }}" > .env.development
+      - name: build docker image
+        run: docker build --progress=plain -t danmt99/twitter-api:v1 -f Dockerfile.dev .
+      - name: login docker hub
+        run: docker login -u "${{secrets.DOCKERHUB_USERNAME}}" -p "${{secrets.DOCKERHUB_PASSWORD}}"  
+      - name: docker push image
+        run: docker push danmt99/twitter-api:v1
+      # - name: run docker compose
+      #   run: docker-compose up  --force-recreate --build
