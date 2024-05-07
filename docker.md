@@ -84,7 +84,7 @@ Nếu muốn chỉ định file `Dockerfile` nào đó thì thêm `-f` và đư�
 Thi thoảng sẽ có thể gặp lỗi do cache, vậy thì thêm `--no-cache` vào
 
 ```bash
-docker build --progress=plain -t dev/twitter:v2 -f Dockerfile.dev .
+docker build --progress=plain --no-cache -t dev/twitter:v2 -f Dockerfile.dev .
 ```
 
 ### Tạo và chạy container dựa trên image
