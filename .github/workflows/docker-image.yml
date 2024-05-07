@@ -9,35 +9,31 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     working-directory: ./TwitterMyCode
-
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Create env file
         run: echo "${{ secrets.TWITTER_ENV_DEVELOPMENT }}" > .env.development
       - name: build docker image
-        run: docker build --progress=plain -t danmt99/twitter-api:v2 -f Dockerfile.dev .
+        run: docker build --progress=plain --no-cache -t danmt99/twitter-api:v3 -f Dockerfile.dev .
       - name: login docker hub
-        run: docker login -u "${{secrets.DOCKERHUB_USERNAME}}" -p "${{secrets.DOCKERHUB_PASSWORD}}"  
+        run: docker login -u "${{secrets.DOCKERHUB_USERNAME}}" -p "${{secrets.DOCKERHUB_PASSWORD}}"
       - name: docker push image
-        run: docker push danmt99/twitter-api:v2
+        run: docker push danmt99/twitter-api:v3
 
-  # deploy:
-  #         runs-on: ubuntu-latest
-  #         needs: build
-  #         steps:
-  #           - name: Executing remote ssh commands using password
-  #             uses: appleboy/ssh-action@v1.0.0
-  #             with:
-  #               host: ${{ secrets.HOST }}
-  #               username: ${{ secrets.HOST_USERNAME }}
-  #               password: ${{ secrets.HOST_PASSWORD }}
-  #               port: ${{ secrets.PORT }}
-  #               script: |
-  #                 docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-  #                 docker pull danmt99/twitter:v2
-  #                 docker stop twitter-api
-  #                 docker rm twitter-api
-  #                 docker run -dp 3000:3000 --name twitter-api --restart unless-stopped -v ~/twitter-api/uploads:/app/uploads danmt99/twitter:v2
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USERNAME }}
+          password: ${{ secrets.HOST_PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            docker login -u "${{secrets.DOCKERHUB_USERNAME}}" -p "${{secrets.DOCKERHUB_PASSWORD}}"
+            docker pull danmt99/twitter-api:v3
+            docker stop twitter-api
+            docker rm twitter-api
+            docker run -dp 4000:4000 --name twitter-api --restart unless-stopped -v ~/twitter-api/uploads:/app/uploads danmt99/twitter-api:v3

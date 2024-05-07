@@ -5,3 +5,5 @@ services:
     image: danmt/twitter:v0
     ports:
       - "4000:4000"
+    volumes:
+      - '~/Desktop/it_me/nodejs/nodejs-super-main/TwitterMyCode/uploads:/app/uploads'
