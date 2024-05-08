@@ -1,5 +1,6 @@
 components:
   schemas:
+    # request body
     LoginBody:
       type: object
       properties:
@@ -9,15 +10,54 @@ components:
         password:
           type: string
           example: Danmt123@
-    SuccessLogin:
+    RegisterBody:
+      type: object
+      properties:
+        email:
+          type: string
+          example: thanhdan1999@gmail.com
+        name:
+          type: string
+          example: danmt
+        day_of_birth:
+          type: string
+          format: ISO8601
+          example: "2024-04-03T07:01:44.259Z"
+        confirm_password:
+          type: string
+          example: Danmt123@
+        password:
+          type: string
+          example: Danmt123@
+    LogoutBody:
+      type: object
+      properties:
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    RefreshTokenBody:
+      type: object
+      properties:
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    EmailVerifyTokenBody:
+      type: object
+      properties:
+        email_verify_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    LoginSuccess:
       type: object
       properties:
         access_token:
           type: string
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYyNzM4MTBhMDJiYzZmMjU2MDljNzBjIiwidHlwZSI6MCwidmVyaWZ5IjoxLCJpYXQiOjE3MTM5MzAyMDYsImV4cCI6MTcxNDAxNjYwNn0.B6fFHCPRBJbRsVkuGVCAtSPtpeZypwiqgnSSl2xul1o"
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
         refresh_token:
           type: string
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYyNzM4MTBhMDJiYzZmMjU2MDljNzBjIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE3MTM5MzAyMDYsImV4cCI6MTcyMjU3MDIwNn0.n94OSfbbbmHmjsof7BDmJrRF1tk47m35TEHQwcxOjOA"
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+
+    # response
     User:
       type: object
       properties:
@@ -70,10 +110,42 @@ components:
             type: string
             format: MongoId
           example: ["66273810a02bc6f25609c70c", "66273810a123c6f25gas9c789"]
+
+    # response success
+    RegisterSuccess:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYyNzM4MTBhMDJiYzZmMjU2MDljNzBjIiwidHlwZSI6MCwidmVyaWZ5IjoxLCJpYXQiOjE3MTM5MzAyMDYsImV4cCI6MTcxNDAxNjYwNn0.B6fFHCPRBJbRsVkuGVCAtSPtpeZypwiqgnSSl2xul1o"
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYyNzM4MTBhMDJiYzZmMjU2MDljNzBjIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE3MTM5MzAyMDYsImV4cCI6MTcyMjU3MDIwNn0.n94OSfbbbmHmjsof7BDmJrRF1tk47m35TEHQwcxOjOA"
+    RefreshTokenSuccess:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    EmailVerifyTokenSuccess:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+
+    # enum
     UserVerifyStatus:
       type: number
       enum: [Unverified, Verified, Banned]
       example: 1
+
   securitySchemes:
     BearerAuth:
       type: http

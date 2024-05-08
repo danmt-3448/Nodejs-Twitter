@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Twitter clone typescript
+  title: Twitter Api Typescript
   description: |-
     This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about
     Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
@@ -18,7 +18,7 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.1
+  version: 1.0.2
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
@@ -34,7 +34,7 @@ paths:
         - users
       summary: Đăng nhập
       operationId: login
-      requestBody:  
+      requestBody:
         description: Update an existent pet in the store
         content:
           application/json:
@@ -81,3 +81,107 @@ paths:
                     example: Get my profile success
                   result:
                     $ref: "#components/schemas/User"
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Register user
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/RegisterBody"
+        required: true
+      responses:
+        "200":
+          description: Register success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Register success
+                  result:
+                    $ref: "#components/schemas/RegisterSuccess"
+  /users/logout:
+    post:
+      tags:
+        - users
+      summary: Logout user
+      operationId: logout
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/LogoutBody"
+        required: true
+      responses:
+        "200":
+          description: Logout success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logout success
+  /users/refresh_token:
+    post:
+      tags:
+        - users
+      summary: Refresh token user
+      operationId: refresh_token
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/RefreshTokenBody"
+        required: true
+      responses:
+        "200":
+          description: RefreshToken success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Refresh token success
+                  result:
+                    $ref: "#components/schemas/RefreshTokenSuccess"
+  /users/verify-email:
+    post:
+      tags:
+        - users
+      summary: Email verify token
+      operationId: email_verify_token
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/EmailVerifyTokenBody"
+        required: true
+      responses:
+        "200":
+          description: Verify email token success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Verify email token success
+                  result:
+                    $ref: "#components/schemas/EmailVerifyTokenSuccess"
