@@ -10,15 +10,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Create env file
         run: echo "${{ secrets.TWITTER_ENV_DEVELOPMENT }}" > .env.development
       - name: build docker image
-        run: docker build --progress=plain --no-cache -t danmt99/twitter-api:v3 -f Dockerfile.dev .
+        run: docker build --progress=plain --no-cache -t danmt99/twitter-api:v4 -f Dockerfile.dev .
       - name: login docker hub
-        run: docker login -u "${{secrets.DOCKERHUB_USERNAME}}" -p "${{secrets.DOCKERHUB_PASSWORD}}"
+        run: docker login -u ${{secrets.DOCKERHUB_USERNAME}} -p ${{secrets.DOCKERHUB_PASSWORD}}
       - name: docker push image
-        run: docker push danmt99/twitter-api:v3
+        run: docker push danmt99/twitter-api:v4
 
   deploy:
     runs-on: ubuntu-latest
@@ -32,8 +32,8 @@ jobs:
           password: ${{ secrets.HOST_PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            docker login -u "${{secrets.DOCKERHUB_USERNAME}}" -p "${{secrets.DOCKERHUB_PASSWORD}}"
-            docker pull danmt99/twitter-api:v3
+            docker login -u ${{secrets.DOCKERHUB_USERNAME}} -p ${{secrets.DOCKERHUB_PASSWORD}}
+            docker pull danmt99/twitter-api:v4
             docker stop twitter-api
             docker rm twitter-api
-            docker run -dp 4000:4000 --name twitter-api --restart unless-stopped -v ~/twitter-api/uploads:/app/uploads danmt99/twitter-api:v3
+            docker run -dp 4000:4000 --name twitter-api --restart unless-stopped -v ~/twitter-api/uploads:/app/uploads danmt99/twitter-api:v4
